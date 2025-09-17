@@ -29,7 +29,7 @@ public class BST {
 
 
     public boolean isEmpty() {
-        return false; // TODO implement me!
+        return root == null;
     }
 
     public boolean contains(int item) {
@@ -47,33 +47,73 @@ public class BST {
 
 
     public void insert(int item) {
-
+        if (this.isEmpty()) {
+            this.root = item;
+            this.right = new BST();
+            this.left = new BST();
+        } else if (item < this.root) {
+            this.left.insert(item);
+        } else {
+            this.right.insert(item);
+        }
     }
 
 
     public void delete(int item) {
-
+        if (this.root == null) return;
+        if (this.root == item) {
+            deleteRoot();
+        } else if (item < this.root) {
+            this.left.delete(item);
+        } else {
+            this.right.delete(item);
+        }
     }
 
     private void deleteRoot() {
+        if (this.left.isEmpty() && this.right.isEmpty()) {
+            this.root = null;
+            this.left = null;
+            this.right = null;
+        } else if (this.left.isEmpty()) {
+            this.root = this.right.root;
+            this.left = this.right.left;
+            this.right = this.right.right;
+        } else if (this.right.isEmpty()) {
+            this.root = this.left.root;
+            this.right = this.left.right;
+            this.left = this.left.left;
+        } else {
+            this.root =  this.left.extractMax();
+            this.left.delete(this.root);
 
+        }
     }
 
 
     private int extractMax() {
-        return -1;
+        // This does NOT remove the node
+        if (this.right == null) {
+            return this.root;
+        } else {
+            return this.right.extractMax();
+        }
     }
 
     public int height() {
-        return -1;
+        // Height is the length of the longest path from the root to a leaf
+        if (this.isEmpty()) { return 0; }
+        return Math.max(this.right.height(), this.left.height()) + 1;
     }
 
     public int count(int item) {
-        return -1;
+        if (this.isEmpty()) { return 0; }
+        return this.right.count(item) + this.left.count(item) + (this.root == item ? 1 : 0);
     }
 
     public int getSize() {
-        return -1;
+        if (this.isEmpty()) { return 0; }
+        return this.right.getSize() + this.left.getSize() + 1;
     }
 
     public static void main(String[] args) {
